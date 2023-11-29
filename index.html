@@ -1,0 +1,237 @@
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>自适应图片网格排版工具</title>
+<style>
+    .upload-btn, .export-btn, .remove-btn {
+        padding: 8px 15px; /* 按钮的内边距，使其短一些 */
+        margin: 5px; /* 添加外边距 */
+        border: none; /* 去除边框 */
+        border-radius: 4px; /* 圆角边框 */
+        cursor: pointer; /* 鼠标悬停时显示指针 */
+        transition: background-color 0.3s; /* 平滑的背景色过渡效果 */
+        width: auto;
+    }
+
+    .upload-box {
+        width: 100%;
+    }
+
+    /* “上传文件”按钮的特定样式 */
+    .upload-btn {
+        background-color: #4CAF50; /* 深绿色背景 */
+    }
+
+    .upload-btn:hover {
+        background-color: #45a049; /* 深绿色的稍浅一点的悬停效果 */
+    }
+
+    .remove-btn {
+        background-color: #777777;
+    }
+
+    .remove-btn:hover {
+        background-color: #444444;
+    }
+
+    /* “上传文件夹”按钮的特定样式 */
+    .export-btn {
+        background-color: #ff9800; /* 橙色背景 */
+        float: right;
+    }
+
+    .export-btn:hover {
+        background-color: #fb8c00; /* 橙色的稍浅一点的悬停效果 */
+    }
+
+    /* 调整按钮的容器布局 */
+    .control-area {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* 按钮靠左排列 */
+        align-items: center;
+    }
+
+
+
+    /*define a fixed padding (variable) size to 16px*/
+    :root {
+        --padding: 16px;
+    }
+
+    img {
+        object-fit: cover; /* 图片保持比例，但填充整个元素 */
+    }
+    .preview-area img {
+        width: 100%; /* 图片宽度自适应 */
+        height: 100%; /* 图片高度保持与宽度的比例 */
+    }
+
+    .grid-area {
+        white-space: nowrap; /* 保持内部元素在一行显示 */
+        position: relative; /* 设置相对定位，作为内部绝对定位元素的参考 */
+        height: 100%;
+    }
+
+    .padding-box {
+        /*padding: 20px;*/
+        display: inline-block; /* 内部元素在一行显示 */
+        position: relative; /* 设置相对定位，作为内部绝对定位元素的参考 */
+        width: 100%; /* 宽度为 100% */
+        height: 100%; /* 高度为 100% */
+    }
+
+    .image-box {
+        position: absolute; /* 绝对定位，相对于 #album 定位 */
+        left: 0; /* 从左侧开始 */
+        top: 0; /* 从顶部开始 */
+        transition: 0.5s; /* 过渡效果 */
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        overflow-x: auto;
+    }
+
+    .image-box img {
+        position: absolute;
+    }
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f5f5f5;
+    }
+
+    .control-area, .preview-area, .grid-area {
+        margin: 20px;
+        width: 90%;
+        max-width: 960px;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 2px 3px rgba(0,0,0,0.24);
+        padding: var(--padding);
+        border-radius: 4px;
+    }
+
+    .control-area {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .control-area > div {
+        margin: 8px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    input[type="number"], input[type="file"], button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .return-btn {
+        background-color: #ff6347;
+    }
+
+    .return-btn:hover {
+        background-color: #e55335;
+    }
+
+    .preview-area {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .grid-area.export {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .grid-area.export .padding-box .image-box {
+        overflow: initial;
+    }
+
+</style>
+</head>
+<body>
+<div class="control-area">
+    <input type="file" class="file-upload" id="uploadFiles" accept="image/*" multiple style="display: none">
+    <input type="file" class="folder-upload" id="uploadFolder" webkitdirectory directory mozdirectory multiple style="display: none">
+
+    <div class="upload-box">
+    <!-- 添加两个用于触发文件和文件夹上传的按钮 -->
+        <button id="uploadFilesBtn" class="upload-btn">添加图片</button>
+        <button id="uploadFolderBtn" class="upload-btn">添加文件夹</button>
+        <button id="removeImageBtn" class="remove-btn">清空图片</button>
+        <button id="exportBtn" class="export-btn" style="display: none;">导出图片</button>
+    </div>
+
+    <div class="input-group">
+        <label for="gridRows">网格行数：</label>
+        <input type="number" class="grid-rows-input" value="4" min="1" step="1" id="gridRows">
+    </div>
+
+    <div class="input-group">
+        <label for="paddingRatio">间距比例：</label>
+        <input type="number" class="padding-ratio-input" value="0.05" step="0.01" id="paddingRatio">
+    </div>
+
+    <div class="input-group">
+        <label for="radiusRatio">圆角比例：</label>
+        <input type="number" class="radius-ratio-input" value="0.05" step="0.01" id="radiusRatio">
+    </div>
+
+    <button class="generate-btn" id="generate">生成</button>
+    <button class="return-btn" style="display: none;">返回</button>
+</div>
+
+<div class="preview-hint">在下方预览框中点击图片即可移除。</div>
+<div class="preview-area">
+    <!-- 图片预览列表 -->
+</div>
+
+<div class="grid-area">
+    <div class="padding-box">
+        <div class="image-box">
+            <!-- 网格生成展示区 -->
+        </div>
+    </div>
+</div>
+
+<script src="js/grid.js"></script>
+<script src="js/shuffle.js"></script>
+<script src="js/album.js"></script>
+<script src="js/main.js"></script>
+</body>
