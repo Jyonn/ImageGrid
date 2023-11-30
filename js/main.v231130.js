@@ -57,6 +57,7 @@ function enterExportMode() {
 
 function exitExportMode() {
     if (demoMode) {
+        displayImagesInGrid();
         return;
     }
     exportMode = false;

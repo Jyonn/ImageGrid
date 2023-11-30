@@ -15,9 +15,10 @@ let getRadioKeys = function(grids) {
 
 
 let imageGrids = [
-    new Grid(1, 1), new Grid(1, 2), new Grid(1, 3),
-    new Grid(2, 1), new Grid(2, 2), new Grid(2, 3),
-    new Grid(3, 1), new Grid(3, 2),
+    new Grid(1, 1), new Grid(1, 2), new Grid(1, 3), new Grid(1, 4),
+    new Grid(2, 1), new Grid(2, 2), new Grid(2, 3), new Grid(2, 4),
+    new Grid(3, 1), new Grid(3, 2), new Grid(3, 3),
+    new Grid(4, 1), new Grid(4, 2)
 ]
 
 let albumGrids = [
