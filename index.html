@@ -230,8 +230,15 @@
     </div>
 </div>
 
+<script src="js/request.js"></script>
 <script src="js/grid.js"></script>
-<script src="js/shuffle.js"></script>
 <script src="js/album.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+    // if "demo" is in the url query, load demo images
+    if (window.location.search.indexOf('demo') > -1) {
+        demonstrate();
+    }
+</script>
 </body>

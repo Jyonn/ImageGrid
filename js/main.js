@@ -19,6 +19,7 @@ let exportBtn = document.getElementById('exportBtn');
 let removeBtn = document.getElementById('removeImageBtn');
 
 let exportMode = false;
+let demoMode = false;
 
 function afterGenerate() {
     if (photoLibrary.length === 0) {
@@ -55,6 +56,9 @@ function enterExportMode() {
 }
 
 function exitExportMode() {
+    if (demoMode) {
+        return;
+    }
     exportMode = false;
     gridArea.classList.remove('export');
 }
@@ -189,4 +193,22 @@ function displayImagesInGrid() {
         img.style.borderRadius = radiusRatio * averageSize + 'px';
         imageBox.appendChild(img);
     });
+}
+
+
+function demonstrate() {
+    demoMode = true;
+    new Request().get('https://unsplash.6-79.cn/random/multiple', {num: 20}).then(data => {
+        photoLibrary = data.body.map(photo => {
+            return {
+                source: photo.regular,
+                width: photo.width,
+                height: photo.height,
+                type: 'image',
+            }
+        });
+        afterGenerate();
+        exportMode = true;
+        gridArea.classList.add('export');
+    })
 }
