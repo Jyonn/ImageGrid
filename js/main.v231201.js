@@ -196,7 +196,6 @@ function displayImagesInGrid() {
     });
 }
 
-
 function demonstrate() {
     demoMode = true;
     new Request().get('https://unsplash.6-79.cn/random/multiple', {num: 30}).then(data => {
