@@ -199,7 +199,7 @@ function displayImagesInGrid() {
 
 function demonstrate() {
     demoMode = true;
-    new Request().get('https://unsplash.6-79.cn/random/multiple', {num: 20}).then(data => {
+    new Request().get('https://unsplash.6-79.cn/random/multiple', {num: 30}).then(data => {
         photoLibrary = data.body.map(photo => {
             return {
                 source: photo.regular,
@@ -211,5 +211,10 @@ function demonstrate() {
         afterGenerate();
         exportMode = true;
         gridArea.classList.add('export');
+        removeLoading()
     })
+}
+
+function removeLoading() {
+    document.querySelector('.loading-container').remove();
 }
